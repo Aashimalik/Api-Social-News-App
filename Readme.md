@@ -21,3 +21,7 @@ Setup Databases
 
 Create Migration
 - run migrate command
+
+Check graphql playground http://localhost:PORT/graphql
+
+
