@@ -13,3 +13,10 @@ Project Setup
 How to run Project
 
 Run yarn watch command in terminal and in new terminal run yarn dev
+
+Setup Databases
+
+- yarn add @mikro-orm/cli @mikro-orm/core @mikro-orm/migrations @mikro-orm/postgresql pg
+- create database db_social_news_app
+
+Create Migration
