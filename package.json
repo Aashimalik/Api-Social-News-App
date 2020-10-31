@@ -1,7 +1,7 @@
 {
   "name": "lireddit-server",
   "version": "1.0.0",
-  "description": "Code Editor     -Visual studio         -Extensions- Bracket Pair colorizer 2, Docker, Graph QL for Vscode, Prettier.",
+  "description": "Li Reddit Server",
   "main": "index.js",
   "scripts": {
     "watch": "tsc -w",
