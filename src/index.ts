@@ -6,10 +6,12 @@ import { Post } from "./entities/Post";
 const main = async() => {
     const orm = await MikroORM.init(microConfig);
     await orm.getMigrator().up();
-    const post = orm.em.create(Post, { title: "my first post" });
-    await orm.em.persistAndFlush(post);
-    // console.log("--------------sql 2--------------")
-    // await orm.em.nativeInsert(Post, { title: "my first post 2" });
+    /*const post = orm.em.create(Post, {
+        title: "my first post",
+    });
+    await orm.em.persistAndFlush(post);*/
+    const post = await orm.em.find(Post, {});
+    console.table(post);
 }
 
 main().catch((err) => {

@@ -20,3 +20,4 @@ Setup Databases
 - create database db_social_news_app
 
 Create Migration
+- run migrate command
