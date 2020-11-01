@@ -24,7 +24,7 @@ const main = async () => {
 
     app.use(
         cors({
-            origin: 'http://localhost:3000/',
+            origin: 'http://localhost:3000',
             credentials: true,
         })
     );
@@ -56,7 +56,7 @@ const main = async () => {
         context: ({ req, res }) => ({ em: orm.em, req, res }),
     });
 
-    apolloServer.applyMiddleware({ app, cors: false });
+    apolloServer.applyMiddleware({ app, path: "/", cors: false });
 
     app.listen(4000, () => {
         // tslint:disable-next-line: no-console
