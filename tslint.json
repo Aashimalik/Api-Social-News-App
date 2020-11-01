@@ -1,0 +1,16 @@
+{
+    "defaultSeverity": "error",
+    "jsRules": {},
+    "rules": {
+      "arrow-parens": false,
+      "ter-arrow-parens": false,
+      "semicolon": true,
+      "space-before-function-paren": [true, "always"],
+      "no-console": true
+    },
+    "linterOptions": {
+      "exclude": [
+        "src/migrations/**/*"
+      ]
+    }
+}

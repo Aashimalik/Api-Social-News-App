@@ -8,7 +8,7 @@ import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from './resolvers/user';
 
-const main = async() => {
+const main = async () => {
     const orm = await MikroORM.init(mikroOrmConfig);
     await orm.getMigrator().up();
 
@@ -22,13 +22,15 @@ const main = async() => {
         context: () => ({ em: orm.em })
     });
 
-    apolloServer.applyMiddleware({ app })
+    apolloServer.applyMiddleware({ app });
 
     app.listen(4000, () => {
+        // tslint:disable-next-line: no-console
         console.log('server started on localhost:4000');
     });
-}
+};
 
 main().catch((err) => {
+    // tslint:disable-next-line: no-console
     console.error(err);
 });

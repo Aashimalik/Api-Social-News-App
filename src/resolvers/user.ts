@@ -34,7 +34,7 @@ class UserResponse {
 export class UserResolver {
 
     @Mutation(() => UserResponse)
-    async register(
+    async register (
         @Arg('options', () => UsernamePasswordInput) options: UsernamePasswordInput,
         @Ctx() { em } : MyContext,
     ): Promise<UserResponse> {
@@ -44,7 +44,7 @@ export class UserResolver {
 						field: 'username',
 						message: 'length must be greater than 2',
 					}]
-				}
+				};
 			}
 			if(options.password.length <=2){
 				return {
@@ -52,7 +52,7 @@ export class UserResolver {
 						field: 'password',
 						message: 'length must be greater than 2',
 					}]
-				}
+				};
 			}
 			const hashedPassword = await argon2.hash(options.password);
 			const user = em.create(User, {
@@ -69,7 +69,7 @@ export class UserResolver {
 							field: 'username',
 							message: 'username already exists',
 						}],
-					}
+					};
 				}
 			}
 
@@ -77,7 +77,7 @@ export class UserResolver {
     }
 
     @Mutation(() => UserResponse)
-    async login(
+    async login (
         @Arg('options', () => UsernamePasswordInput) options: UsernamePasswordInput,
         @Ctx() { em } : MyContext,
     ): Promise<UserResponse> {
@@ -93,7 +93,7 @@ export class UserResolver {
                         message: 'username doesn\'t exist'
                     }
                 ]
-            }
+            };
         }
 
         const valid = await argon2.verify(user.password, options.password);
@@ -105,7 +105,7 @@ export class UserResolver {
                         message: 'Incorrect password'
                     }
                 ]
-            }
+            };
 				}
 
        return { user };
