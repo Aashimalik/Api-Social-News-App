@@ -7,7 +7,6 @@
     "watch": "tsc -w",
     "dev": "nodemon ./dist/index.js",
     "start": "node -r dotenv/config ./dist/index.js",
-    "create:migration": "rm -rf src/migrations && rm -rf dist/migrations && npx mikro-orm migration:create",
     "lint:ts": "tslint './src/**/*.ts'",
     "lint:ts:fix": "npm run lint:ts -- --fix"
   },
@@ -26,10 +25,6 @@
     "typescript": "^4.0.5"
   },
   "dependencies": {
-    "@mikro-orm/cli": "^4.2.3",
-    "@mikro-orm/core": "^4.2.3",
-    "@mikro-orm/migrations": "^4.2.3",
-    "@mikro-orm/postgresql": "^4.2.3",
     "@types/ioredis": "^4.17.7",
     "@types/uuid": "^8.3.0",
     "apollo-server-express": "^2.19.0",
@@ -45,6 +40,7 @@
     "reflect-metadata": "^0.1.13",
     "tslint": "^6.1.3",
     "type-graphql": "^1.1.0",
+    "typeorm": "^0.2.29",
     "uuid": "^8.3.1"
   },
   "mikro-orm": {
