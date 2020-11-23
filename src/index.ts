@@ -13,18 +13,20 @@ import { UserResolver } from './resolvers/user';
 import { __prod__, COOKIE_NAME } from './constants';
 import { Post } from './entities/Post';
 import { User } from './entities/User';
+import path from 'path';
 
 const main = async () => {
-    await createConnection({
+    const conn = await createConnection({
         type: 'postgres',
         database: 'db_social_news_app_development',
         username: 'postgres',
         password: 'postgres',
         logging: true,
         synchronize: true,
+        migrations: [path.join(__dirname, "./migrations/*")],
         entities: [Post, User]
     });
-
+    await conn.runMigrations();
     const app = express();
 
     const RedisStore = connectRedis(session);
