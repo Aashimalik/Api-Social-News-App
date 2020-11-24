@@ -20,10 +20,10 @@ const main = async () => {
         type: 'postgres',
         database: 'db_social_news_app_development',
         username: 'postgres',
-        password: 'postgres',
+        password: process.env.DATABASE_PASSWORD || 'postgres',
         logging: true,
         synchronize: true,
-        migrations: [path.join(__dirname, "./migrations/*")],
+        migrations: [path.join(__dirname, "./migration/*")],
         entities: [Post, User]
     });
     await conn.runMigrations();
