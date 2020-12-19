@@ -3,6 +3,7 @@ import { Post } from "../entities/Post";
 import { MyContext } from "../types";
 import { isAuth } from "../middleware/isAuth";
 import { getConnection } from "typeorm";
+import { Upvote } from "../entities/Upvote";
 
 @InputType()
 export class PostInput {
@@ -37,17 +38,49 @@ export class PostResolver {
     const isUpvote = value !== -1;
     const realValue = isUpvote ? 1 : -1;
     const { userId } = req.session;
-    await getConnection().query(`
-      START TRANSACTION;
-      INSERT INTO upvote ("userId", "postId", value)
-      VALUES (${userId},${postId},${value});
+    const upvote = await Upvote.findOne({ where: { postId, userId } });
 
-      UPDATE post
-      SET points = points + ${realValue}
-      WHERE id = ${postId};
+    if (upvote && upvote.value !== realValue) {
+      await getConnection().transaction(async (tm) => {
+        await tm.query(
+          `
+          UPDATE upvote
+          SET value = $1
+          WHERE "postId" = $2 AND "userId" = $3;
+        `,
+          [realValue, postId, userId],
+        );
 
-      COMMIT;
-    `);
+        await tm.query(
+          `
+          UPDATE post
+          SET points = points + $1
+          WHERE id = $2;
+        `,
+          [2 * realValue, postId],
+        );
+      });
+    } else if (!upvote) {
+      await getConnection().transaction(async (tm) => {
+        await tm.query(
+          `
+          INSERT INTO upvote ("userId", "postId", value)
+          VALUES ($1, $2, $3);
+        `,
+          [userId, postId, realValue],
+        );
+
+        await tm.query(
+          `
+          UPDATE post
+          SET points = points + $1
+          WHERE id = $2;
+        `,
+          [realValue, postId],
+        );
+      });
+    }
+
     return true;
   }
 
@@ -55,34 +88,41 @@ export class PostResolver {
   async posts (
     @Arg("limit", () => Int) limit: number,
     @Arg("cursor", () => String, { nullable: true }) cursor: string | null,
+    @Ctx() { req }: MyContext,
   ): Promise<PaginatedPosts> {
     const realLimit = Math.min(50, limit) + 1;
     const realLimitPlusOne = realLimit + 1;
-    const replacements: any[] = [realLimitPlusOne];
+
+    const replacements: any[] = [realLimitPlusOne, req.session.userId];
 
     if (cursor) {
       replacements.push(new Date(parseInt(cursor)));
     }
 
     const posts = await getConnection().query(
-      `
-      SELECT
-        p.*,
-        JSON_BUILD_OBJECT(
-          'id', u.id,
-          'email', u.email,
-          'username', u.username,
-          'createdAt', u."createdAt",
-          'updatedAt', u."updatedAt"
-        ) creator
-      FROM post p
-      INNER JOIN public.user u ON u.id = p."creatorId"
-      ${cursor ? `WHERE p."createdAt" < $2` : ""}
-      ORDER BY p."createdAt" DESC
-      LIMIT $1
-    `,
-      replacements,
-    );
+    `
+    SELECT
+      p.*,
+      JSON_BUILD_OBJECT(
+        'id', u.id,
+        'email', u.email,
+        'username', u.username,
+        'createdAt', u."createdAt",
+        'updatedAt', u."updatedAt"
+      ) creator,
+      ${
+        req.session.userId
+          ? '(SELECT value from upvote WHERE "userId" = $2 AND "postId" = p.id) "voteStatus"'
+          : '$2 as "voteStatus"'
+      }
+    FROM post p
+    INNER JOIN public.user u ON u.id = p."creatorId"
+    ${cursor ? `WHERE p."createdAt" < $3` : ""}
+    ORDER BY p."createdAt" DESC
+    LIMIT $1
+  `,
+    replacements,
+  );
 
     return {
       posts: posts.slice(0, realLimit),
