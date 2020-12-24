@@ -1,27 +1,31 @@
-Code Editor
-    -Visual studio
-        -Extensions- Bracket Pair colorizer 2, Docker, Graph QL for Vscode, Prettier.
+# Social News API
 
-Project Setup
+This is the code for social News API. To see the code for social news Web, [click here ](https://github.com/Aashimalik/Web-Social-News-App).
 
-1- npm init
-2- yarn add -D @types/node typescript
-3- yard add -D ts-node
-4- npx tsconfig.json
-5- yard add -D nodemon
+## social News pages and features:
 
-How to run Project
+- Home page with posts list;
+- Post page
+- Register page\*;
+- Login page\*\*;
+- Forgot password\*;
+- Create and edit posts;
+- Cookie Authentication;
+- Voting system;
 
-Run yarn watch command in terminal and in new terminal run yarn dev
+## Technologies
 
-Setup Databases
+### Server
 
-- yarn add @mikro-orm/cli @mikro-orm/core @mikro-orm/migrations @mikro-orm/postgresql pg
-- create database db_social_news_app
+- Node.js with TypeScript
+- TypeORM (migrated from MikroORM)
+- PostgreSQL and Redis
+- GraphQL with TypeGraphQL
+- Express with Apollo
 
-Create Migration
-- run migrate command
+### Web
 
-Check graphql playground http://localhost:PORT/graphql
-
-
+- React with TypeScript
+- Next.js
+- Chakra
+- GraphQL with Apollo (migrated from URQL)
